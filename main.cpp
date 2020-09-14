@@ -43,7 +43,7 @@ If you need inspiration for what to write, take a look at previously approved st
  UDT 1:
  */
 
-struct oscillator
+struct Oscillator
 {
     float freq;
     bool oscCanPlay{true};
@@ -66,8 +66,8 @@ struct oscillator
     };
     OscWave OscType;
 
-    oscillator ();
-    ~oscillator();
+    Oscillator ();
+    ~Oscillator();
 
     float calcHarmonics(float freqIn = 440.0f, int nHarm = 4);
     float freqHalfTone (float freq);
@@ -75,28 +75,28 @@ struct oscillator
     
 };
 
-oscillator::oscillator()
+Oscillator::Oscillator()
 {
     freq = 440.0f ;
     int numHarmonics = 4;
 }
 
-oscillator::~oscillator()
+Oscillator::~Oscillator()
 {
     std::cout << "oscillator is destroyed\n";
 }
 
-oscillator::OscWave::OscWave() : weight(2.2f), type("Sine")
+Oscillator::OscWave::OscWave() : weight(2.2f), type("Sine")
 {
     duty = 0.5f;
 }
 
-oscillator::OscWave::~OscWave() 
+Oscillator::OscWave::~OscWave() 
 {
     std::cout << "OscWave Dtor\n";
 }
 
-float oscillator::calcHarmonics(float freqIn, int nHarm)
+float Oscillator::calcHarmonics(float freqIn, int nHarm)
 {
     for (int i = 0 ; i < nHarm ; i++)
     {
@@ -105,19 +105,19 @@ float oscillator::calcHarmonics(float freqIn, int nHarm)
     return freqIn;
 }
 
-float oscillator::freqHalfTone (float freq)
+float Oscillator::freqHalfTone (float freq)
 {
     return 1.1225f*freq;
 
 }
 
-char oscillator::changeTimbre (char oscType1, char oscType2, bool isTheSame)
+char Oscillator::changeTimbre (char oscType1, char oscType2, bool isTheSame)
 {
     if (isTheSame) return oscType1;
     return oscType2;
 }
 
-int oscillator::OscWave::ChangeType(int whichOsc, int newType, int numOsc)
+int Oscillator::OscWave::ChangeType(int whichOsc, int newType, int numOsc)
 {
     for (int i = 1; i < numOsc; i++)
     {
@@ -128,9 +128,11 @@ int oscillator::OscWave::ChangeType(int whichOsc, int newType, int numOsc)
         }
     i++;
     }
+
+    return newType;
 }
 
-void oscillator::OscWave::MakeNoise (float strength, float weight)
+void Oscillator::OscWave::MakeNoise (float strength, float weight)
 {
     if(weight > strength)
     {
@@ -140,7 +142,7 @@ void oscillator::OscWave::MakeNoise (float strength, float weight)
     else std::cout << "No Noise\n";
 }
 
-void oscillator::OscWave::StartPlaying(bool isPlaying)
+void Oscillator::OscWave::StartPlaying(bool isPlaying)
 {
     if(isPlaying) 
     {
@@ -157,7 +159,7 @@ void oscillator::OscWave::StartPlaying(bool isPlaying)
  UDT 2:
  */
 
-struct filter
+struct Filter
 {
     char filterType;
     float q;
@@ -165,26 +167,26 @@ struct filter
     float slope = 4.5f;
     float resonance = 2.4f;
 
-    filter();
-    ~filter();
+    Filter();
+    ~Filter();
 
     void FilterFreq (float freq, int nHarm);
     void SwitchOffFilter (bool isFilterActive, int FilterT = 3);
     int  nHarm (float freq, float freqMax = 20000.0f);
 };
 
-filter::filter () : 
+Filter::Filter () : 
         filterType('a'),
         q(0.4f),
         centerFreq(440.0f)
 {}
 
-filter::~filter ()
+Filter::~Filter ()
 {
-
+    std::cout << "filter is destroyed\n";
 }
 
-void filter::FilterFreq (float freq, int nHarm)
+void Filter::FilterFreq (float freq, int nHarm)
 {
     int i = 0;
     while (i < nHarm)
@@ -195,7 +197,7 @@ void filter::FilterFreq (float freq, int nHarm)
 
 }
 
-void filter::SwitchOffFilter (bool isFilterActive, int filterT)
+void Filter::SwitchOffFilter (bool isFilterActive, int filterT)
 {
     int i = 0;
     while (isFilterActive)
@@ -208,7 +210,7 @@ void filter::SwitchOffFilter (bool isFilterActive, int filterT)
 
 }
 
-int filter::nHarm (float freq, float freqMax)
+int Filter::nHarm (float freq, float freqMax)
 {
     int i = 1;
 
@@ -226,7 +228,7 @@ int filter::nHarm (float freq, float freqMax)
  UDT 3:
  */
 
-struct lfo
+struct Lfo
 {
     float modFreq;
     float dcOffset;
@@ -251,37 +253,37 @@ struct lfo
 
     LfoType LfoT;
 
-    lfo();
-    ~lfo();
+    Lfo();
+    ~Lfo();
 
     bool CanSwitchOnLfo (bool isLfoActive = true);
     float ChangeIntensity (int lfoT, float intensityLfoIn, float intensityLfoOut);
     char ChangeLfoWave (char waveTypeIn = 'a', char waveTypeOut = 'b');
 };
 
-lfo::LfoType::LfoType() : lfoWeight(1.2f), type("Sine")
+Lfo::LfoType::LfoType() : lfoWeight(1.2f), type("Sine")
 {
     lfoDuty = 0.5f;
 }
 
-lfo::LfoType::~LfoType() 
+Lfo::LfoType::~LfoType() 
 {
     std::cout << "LfoType Dtor\n";
 }
 
-lfo::lfo()
+Lfo::Lfo()
 {
     modFreq = 440.f;
     dcOffset = 0.5f;
 
 }
 
-lfo::~lfo()
+Lfo::~Lfo()
 {
-  
+    std::cout << "lfo is destroyed\n";
 }
 
-int lfo::LfoType::ChangeType(int whichLfo, int newType, int numLfo)
+int Lfo::LfoType::ChangeType(int whichLfo, int newType, int numLfo)
 {
     for (int i = 1; i < numLfo; i++)
     {
@@ -292,9 +294,10 @@ int lfo::LfoType::ChangeType(int whichLfo, int newType, int numLfo)
         }
     i++;
     }
+    return newType;
 }
 
-void lfo::LfoType::MakeNoise (float strength, float weight)
+void Lfo::LfoType::MakeNoise (float strength, float weight)
 {
     if(weight > strength)
     {
@@ -304,7 +307,7 @@ void lfo::LfoType::MakeNoise (float strength, float weight)
     else std::cout << "No Noise\n";
 }
 
-void lfo::LfoType::StartPlaying(bool isPlaying)
+void Lfo::LfoType::StartPlaying(bool isPlaying)
 {
     if(isPlaying) 
     {
@@ -317,13 +320,13 @@ void lfo::LfoType::StartPlaying(bool isPlaying)
     }
 }
 
-bool lfo::CanSwitchOnLfo (bool isLfoActive)
+bool Lfo::CanSwitchOnLfo (bool isLfoActive)
 {
     if (isLfoActive) return false;
     return true;
 }
 
-float lfo::ChangeIntensity (int lfoT, float intensityLfoIn, float intensityLfoOut)
+float Lfo::ChangeIntensity (int lfoT, float intensityLfoIn, float intensityLfoOut)
 {
     for (int i = 0; i < lfoT; i++)
     {
@@ -333,7 +336,7 @@ float lfo::ChangeIntensity (int lfoT, float intensityLfoIn, float intensityLfoOu
     return intensityLfoOut;
 }
 
-char lfo::ChangeLfoWave (char waveTypeIn, char waveTypeOut)
+char Lfo::ChangeLfoWave (char waveTypeIn, char waveTypeOut)
 {
     if (waveTypeIn != 'o') return waveTypeOut;
     return waveTypeIn;
@@ -342,10 +345,48 @@ char lfo::ChangeLfoWave (char waveTypeIn, char waveTypeOut)
 /*
  new UDT 4:
  */
+struct Synth
+{
+    Oscillator osc1, osc2, osc3;
+    Filter filter1, filter2;
 
+    ~Synth();
+};
+
+Synth::~Synth()
+{
+    osc1.oscCanPlay = false;
+    osc2.oscCanPlay = false;
+    osc3.oscCanPlay = false;
+
+    filter1.SwitchOffFilter(true);
+    filter2.SwitchOffFilter(true);
+
+    std::cout << "Synth is destroyed\n";
+}
 /*
  new UDT 5:
  */
+ struct Modulator
+{
+    Lfo lfo1, lfo2;
+    Filter ModFilter1, ModFilter2;
+
+    ~Modulator();
+};
+
+Modulator::~Modulator()
+{
+    lfo1.isActive = false;
+    lfo2.isActive = false;
+
+    ModFilter1.SwitchOffFilter(true);
+    ModFilter2.SwitchOffFilter(true);
+
+    std::cout << "Modulator is destroyed\n";
+}
+
+
 
 /*
  MAKE SURE YOU ARE NOT ON THE MASTER BRANCH
