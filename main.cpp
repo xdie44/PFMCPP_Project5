@@ -41,15 +41,60 @@ If you need inspiration for what to write, take a look at previously approved st
 /*
  UDT 1:
  */
+struct oscillator
+{
+    char oscType;
+    float freq;
+    bool oscCanPlay;
+    float volume;
+    int numHarmonics;
 
+    oscillator ();
+    ~oscillator();
+
+    void changeNote(float freqIn = 440.0f, float freqOut = 880.0f);
+    int freqToMidiNote (float freq, int numHarm);
+    char changeTimbre (char oscType1 = 'a', char oscType2 = 'b', bool isTheSame = false);
+    
+};
+
+oscillator::oscillator()
+{
+    oscType = 'a';
+    freq = 440.0f ;
+    bool oscCanPlay = true;
+}
 /*
  UDT 2:
  */
+struct filter
+{
+    char filterType;
+    float q;
+    float centerFreq;
+    float slope;
+    float resonance;
 
+    void changeFilterFreq (float freq1, float freq2, float rampTime);
+    bool switchOffFilter (bool isFilterActive, char filterT = 'a');
+    void adsrFilter (float attack, float decay, float sustain, float release = 0);
+};
 /*
  UDT 3:
  */
+struct lfo
+{
+    float modFreq;
+    float dcOffset;
+    float intensity;
+    char lfoType;
+    bool isActive;
 
+    bool switchOnLfo (bool isLfoActive = true);
+    float changeIntensity (char lfoT, float intensityLfoIn, float intensityLfoOut);
+    char changeLfoWave (char waveTypeIn = 'a', char waveTypeOut = 'b');
+
+};
 /*
  new UDT 4:
  */
