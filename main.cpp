@@ -402,5 +402,38 @@ Modulator::~Modulator()
 #include <iostream>
 int main()
 {
+    Oscillator mainOsc, secondaryOsc;
+    Oscillator::OscWave square, triangle;
+    Filter lowPass, highPass;
+    Lfo vibrato, tremolo;
+    Lfo::LfoType sine, dutyCycle;
+
+    mainOsc.freq = 300.0f;
+    secondaryOsc.freq = 2 * mainOsc.freq;
+    std::cout << "Main Oscillator frequency: " << mainOsc.freq << std::endl;
+    std::cout << "Secondary Oscillator frequency: " << secondaryOsc.freq << std::endl;
+    std::cout << std::endl;
+
+    square.ChangeType(3, 5, 9);
+    triangle.StartPlaying(true);
+    std::cout << "Triangle intensity value: " << triangle.intensity << std::endl;
+    std::cout << "Square is making noise? ";
+    square.MakeNoise(20, 15);
+    std::cout << std::endl;
+
+    std::cout << "The low pass filter contains " << lowPass.nHarm(400) << " harmonics" << std::endl;
+    std::cout << "The high pass slope is: " << highPass.slope << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "Vibrato intensity is: " << vibrato.intensity << std::endl;
+    std::cout << "Tremolo DC Offset is: " << vibrato.dcOffset << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "Sine Lfo state: " << std::endl;
+    sine.StartPlaying(true);
+    std::cout << "If Duty Cycle Lfo making noise? " << std::endl;
+    dutyCycle.MakeNoise(10.0f, 20.5f);
+    std::cout << std::endl;
+
     std::cout << "good to go!" << std::endl;
 }
