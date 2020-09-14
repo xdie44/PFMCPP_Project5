@@ -46,8 +46,8 @@ If you need inspiration for what to write, take a look at previously approved st
 struct Oscillator
 {
     float freq;
+    float volume {0.5};
     bool oscCanPlay{true};
-    float volume {0.5f};
     int numHarmonics;
     struct OscWave 
     {
@@ -57,7 +57,7 @@ struct Oscillator
         float duty, weight;
         int intensity = 3;
         bool play = false;
-        std::string type;
+        char type;
 
         void StartPlaying(bool isPlaying);
         void MakeNoise(float Strength, float weight);
@@ -75,18 +75,19 @@ struct Oscillator
     
 };
 
-Oscillator::Oscillator()
-{
-    freq = 440.0f ;
-    int numHarmonics = 4;
-}
+Oscillator::Oscillator() : 
+                freq(440.0f),
+                numHarmonics(4)
+{}
 
 Oscillator::~Oscillator()
 {
     std::cout << "oscillator is destroyed\n";
 }
 
-Oscillator::OscWave::OscWave() : weight(2.2f), type("Sine")
+Oscillator::OscWave::OscWave() : 
+                    weight(2.2f), 
+                    type('a')
 {
     duty = 0.5f;
 }
@@ -105,9 +106,9 @@ float Oscillator::calcHarmonics(float freqIn, int nHarm)
     return freqIn;
 }
 
-float Oscillator::freqHalfTone (float freq)
+float Oscillator::freqHalfTone (float freqTemp)
 {
-    return 1.1225f*freq;
+    return 1.1225f*freqTemp;
 
 }
 
@@ -123,18 +124,17 @@ int Oscillator::OscWave::ChangeType(int whichOsc, int newType, int numOsc)
     {
         if (i == newType) 
         {
-            std::cout << "oscillator n: " << i << "changed!";
+            std::cout << "oscillator n: " << i << " changed!" << std::endl;
             newType += whichOsc;
         }
-    i++;
     }
 
     return newType;
 }
 
-void Oscillator::OscWave::MakeNoise (float strength, float weight)
+void Oscillator::OscWave::MakeNoise (float strength, float weightT)
 {
-    if(weight > strength)
+    if(weightT > strength)
     {
         std::cout << "OscWeight: " << weight << " > " << "strength: " << strength << std::endl;
         std::cout << "Make Noise!\n";
@@ -146,12 +146,12 @@ void Oscillator::OscWave::StartPlaying(bool isPlaying)
 {
     if(isPlaying) 
     {
-        std::cout << "Already playing\n.";
+        std::cout << "Already playing\n";
     }
     else
     {
         play = true;
-        std::cout << "Now is playing\n.";
+        std::cout << "now is playing\n";
     }
 }
 
@@ -199,11 +199,11 @@ void Filter::FilterFreq (float freq, int nHarm)
 
 void Filter::SwitchOffFilter (bool isFilterActive, int filterT)
 {
-    int i = 0;
+    int i = 1;
     while (isFilterActive)
         {
             if (filterT == i) isFilterActive = false;
-             std::cout << "Filter n " << i << " is not active!\n";
+             std::cout << "Filter n " << i << " is switched off!\n";
             i++;
         }
     filterType = 'o';
@@ -213,13 +213,14 @@ void Filter::SwitchOffFilter (bool isFilterActive, int filterT)
 int Filter::nHarm (float freq, float freqMax)
 {
     int i = 1;
+    int j = 0;
 
     while (freq * i < freqMax)
     {
-        std::cout << "Harmonic n " << i << " - " << freq * i << "\n";
+        if (freq * i > 500) j++;
         i++;
     }
-    std::cout << "There are " << i << " harmonics\n";
+    std::cout << j << " harmonics above 500 Hz\n";
 
     return i;
 }
@@ -292,7 +293,6 @@ int Lfo::LfoType::ChangeType(int whichLfo, int newType, int numLfo)
             std::cout << "Lfo n: " << i << "changed!";
             newType += whichLfo;
         }
-    i++;
     }
     return newType;
 }
@@ -301,8 +301,8 @@ void Lfo::LfoType::MakeNoise (float strength, float weight)
 {
     if(weight > strength)
     {
-        std::cout << "LfoWeight: " << weight << " > " << "strength: " << strength << std::endl;
-        std::cout << "LFO in making noise!\n";
+        std::cout << "LfoWeight is " << weight << " and strength is " << strength << std::endl;
+        std::cout << "so WARNING Lfo in making noise!\n";
     }
     else std::cout << "No Noise\n";
 }
@@ -311,11 +311,11 @@ void Lfo::LfoType::StartPlaying(bool isPlaying)
 {
     if(isPlaying) 
     {
-        std::cout << "Lfo already playing\n.";
+        std::cout << "Lfo already playing\n";
     }
     else
     {
-        std::cout << "Now is playing\n.";
+        std::cout << "Now is playing\n";
         isPlaying = true;
     }
 }
@@ -350,6 +350,8 @@ struct Synth
     Oscillator osc1, osc2, osc3;
     Filter filter1, filter2;
 
+    bool isOn = true;
+
     ~Synth();
 };
 
@@ -371,6 +373,8 @@ Synth::~Synth()
 {
     Lfo lfo1, lfo2;
     Filter ModFilter1, ModFilter2;
+
+    bool isOn = false;
 
     ~Modulator();
 };
@@ -402,11 +406,23 @@ Modulator::~Modulator()
 #include <iostream>
 int main()
 {
+    Synth synth1, synth2;
+    Modulator mainMod, secMod;
     Oscillator mainOsc, secondaryOsc;
     Oscillator::OscWave square, triangle;
     Filter lowPass, highPass;
     Lfo vibrato, tremolo;
     Lfo::LfoType sine, dutyCycle;
+
+    if (synth1.isOn) std::cout << "Synth 1 is On" << std::endl;
+    else std::cout << "Synth 1 is Off" << std::endl;
+    if (synth2.isOn) std::cout << "Synth 2 is On" << std::endl;
+    else std::cout << "Synth 2 is Off" << std::endl;
+    if (mainMod.isOn) std::cout << "Main modulator is On" << std::endl;
+    else std::cout << "Main modulator is Off" << std::endl;
+    if (secMod.isOn) std::cout << "Secondary modulator is On" << std::endl;
+    else std::cout << "Secondary modulator is Off" << std::endl;
+     std::cout << std::endl;
 
     mainOsc.freq = 300.0f;
     secondaryOsc.freq = 2 * mainOsc.freq;
@@ -414,14 +430,18 @@ int main()
     std::cout << "Secondary Oscillator frequency: " << secondaryOsc.freq << std::endl;
     std::cout << std::endl;
 
+    std::cout << "Square ";
     square.ChangeType(3, 5, 9);
-    triangle.StartPlaying(true);
+    std::cout << "Triangle oscillator ";
+    triangle.StartPlaying(false);
     std::cout << "Triangle intensity value: " << triangle.intensity << std::endl;
     std::cout << "Square is making noise? ";
     square.MakeNoise(20, 15);
     std::cout << std::endl;
 
-    std::cout << "The low pass filter contains " << lowPass.nHarm(400) << " harmonics" << std::endl;
+    std::cout << "The low pass filter contains ";
+    int nHarmTemp = lowPass.nHarm(400);
+    std::cout << " among " << nHarmTemp << " harmonics" << std::endl;
     std::cout << "The high pass slope is: " << highPass.slope << std::endl;
     std::cout << std::endl;
 
@@ -429,11 +449,13 @@ int main()
     std::cout << "Tremolo DC Offset is: " << vibrato.dcOffset << std::endl;
     std::cout << std::endl;
 
-    std::cout << "Sine Lfo state: " << std::endl;
+    std::cout << "Sine Lfo state: ";
     sine.StartPlaying(true);
-    std::cout << "If Duty Cycle Lfo making noise? " << std::endl;
+    std::cout << "Is Duty Cycle Lfo making noise? " << std::endl;
     dutyCycle.MakeNoise(10.0f, 20.5f);
     std::cout << std::endl;
 
     std::cout << "good to go!" << std::endl;
+
+    std::cout << std::endl;
 }
