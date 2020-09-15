@@ -54,14 +54,15 @@ struct Oscillator
         OscWave();
         ~OscWave();
 
-        float duty, weight;
+        float duty = 0.5f;
+        float weight = 2.2f;
         int intensity = 3;
         bool play = false;
-        char type;
+        char type = 'a';
 
-        void StartPlaying(bool isPlaying);
-        void MakeNoise(float Strength, float weight);
-        int ChangeType(int whichOsc, int newType, int numOsc);
+        void startPlaying(bool isPlaying);
+        void makeNoise(float Strength, float weight);
+        int changeType(int whichOsc, int newType, int numOsc);
         
     };
     OscWave OscType;
@@ -108,17 +109,16 @@ float Oscillator::calcHarmonics(float freqIn, int nHarm)
 
 float Oscillator::freqHalfTone (float freqTemp)
 {
-    return 1.1225f*freqTemp;
+    return 1.1225f * freqTemp;
 
 }
 
 char Oscillator::changeTimbre (char oscType1, char oscType2, bool isTheSame)
 {
-    if (isTheSame) return oscType1;
-    return oscType2;
+    return isTheSame ? oscType1 : oscType2;
 }
 
-int Oscillator::OscWave::ChangeType(int whichOsc, int newType, int numOsc)
+int Oscillator::OscWave::changeType(int whichOsc, int newType, int numOsc)
 {
     for (int i = 1; i < numOsc; i++)
     {
@@ -132,7 +132,7 @@ int Oscillator::OscWave::ChangeType(int whichOsc, int newType, int numOsc)
     return newType;
 }
 
-void Oscillator::OscWave::MakeNoise (float strength, float weightT)
+void Oscillator::OscWave::makeNoise (float strength, float weightT)
 {
     if(weightT > strength)
     {
@@ -142,7 +142,7 @@ void Oscillator::OscWave::MakeNoise (float strength, float weightT)
     else std::cout << "No Noise\n";
 }
 
-void Oscillator::OscWave::StartPlaying(bool isPlaying)
+void Oscillator::OscWave::startPlaying(bool isPlaying)
 {
     if(isPlaying) 
     {
@@ -170,8 +170,8 @@ struct Filter
     Filter();
     ~Filter();
 
-    void FilterFreq (float freq, int nHarm);
-    void SwitchOffFilter (bool isFilterActive, int FilterT = 3);
+    void filterFreq (float freq, int nHarm);
+    void switchOffFilter (bool isFilterActive, int filterT = 3);
     int  nHarm (float freq, float freqMax = 20000.0f);
 };
 
@@ -186,26 +186,26 @@ Filter::~Filter ()
     std::cout << "filter is destroyed\n";
 }
 
-void Filter::FilterFreq (float freq, int nHarm)
+void Filter::filterFreq (float freq, int nHarm)
 {
     int i = 0;
     while (i < nHarm)
     {
-            std::cout << "Freq n " << i << " " << freq * i;
-            i ++;
+        std::cout << "Freq n " << i << " " << freq * i;
+        i ++;
     }
 
 }
 
-void Filter::SwitchOffFilter (bool isFilterActive, int filterT)
+void Filter::switchOffFilter (bool isFilterActive, int filterT)
 {
     int i = 1;
-    while (isFilterActive)
+    while (i <= filterT)
         {
-            if (filterT == i) isFilterActive = false;
-             std::cout << "Filter n " << i << " is switched off!\n";
+            std::cout << "Filter n " << i << " is switched off!\n";
             i++;
         }
+    isFilterActive = false;
     filterType = 'o';
 
 }
@@ -217,7 +217,9 @@ int Filter::nHarm (float freq, float freqMax)
 
     while (freq * i < freqMax)
     {
-        if (freq * i > 500) j++;
+        if (freq * i > 500) 
+            j++;
+
         i++;
     }
     std::cout << j << " harmonics above 500 Hz\n";
@@ -246,9 +248,9 @@ struct Lfo
         bool lfoPlay = false;
         std::string type;
 
-        void StartPlaying(bool isPlaying);
-        void MakeNoise(float strength, float weight);
-        int ChangeType(int whichLfo, int newType, int numLfo);
+        void startPlaying(bool isPlaying);
+        void makeNoise(float strength, float weight);
+        int changeType(int whichLfo, int newType, int numLfo);
         
     };
 
@@ -257,9 +259,9 @@ struct Lfo
     Lfo();
     ~Lfo();
 
-    bool CanSwitchOnLfo (bool isLfoActive = true);
-    float ChangeIntensity (int lfoT, float intensityLfoIn, float intensityLfoOut);
-    char ChangeLfoWave (char waveTypeIn = 'a', char waveTypeOut = 'b');
+    bool canSwitchOnLfo (bool isLfoActive = true);
+    float changeIntensity (int lfoT, float intensityLfoIn, float intensityLfoOut);
+    char changeLfoWave (char waveTypeIn = 'a', char waveTypeOut = 'b');
 };
 
 Lfo::LfoType::LfoType() : lfoWeight(1.2f), type("Sine")
@@ -284,7 +286,7 @@ Lfo::~Lfo()
     std::cout << "lfo is destroyed\n";
 }
 
-int Lfo::LfoType::ChangeType(int whichLfo, int newType, int numLfo)
+int Lfo::LfoType::changeType(int whichLfo, int newType, int numLfo)
 {
     for (int i = 1; i < numLfo; i++)
     {
@@ -297,17 +299,17 @@ int Lfo::LfoType::ChangeType(int whichLfo, int newType, int numLfo)
     return newType;
 }
 
-void Lfo::LfoType::MakeNoise (float strength, float weight)
+void Lfo::LfoType::makeNoise (float strength, float weight)
 {
     if(weight > strength)
     {
         std::cout << "LfoWeight is " << weight << " and strength is " << strength << std::endl;
-        std::cout << "so WARNING Lfo in making noise!\n";
+        std::cout << "so WARNING Lfo is making noise!\n";
     }
     else std::cout << "No Noise\n";
 }
 
-void Lfo::LfoType::StartPlaying(bool isPlaying)
+void Lfo::LfoType::startPlaying(bool isPlaying)
 {
     if(isPlaying) 
     {
@@ -320,13 +322,12 @@ void Lfo::LfoType::StartPlaying(bool isPlaying)
     }
 }
 
-bool Lfo::CanSwitchOnLfo (bool isLfoActive)
+bool Lfo::canSwitchOnLfo (bool isLfoActive)
 {
-    if (isLfoActive) return false;
-    return true;
+    return isLfoActive ? false : true;
 }
 
-float Lfo::ChangeIntensity (int lfoT, float intensityLfoIn, float intensityLfoOut)
+float Lfo::changeIntensity (int lfoT, float intensityLfoIn, float intensityLfoOut)
 {
     for (int i = 0; i < lfoT; i++)
     {
@@ -336,10 +337,9 @@ float Lfo::ChangeIntensity (int lfoT, float intensityLfoIn, float intensityLfoOu
     return intensityLfoOut;
 }
 
-char Lfo::ChangeLfoWave (char waveTypeIn, char waveTypeOut)
+char Lfo::changeLfoWave (char waveTypeIn, char waveTypeOut)
 {
-    if (waveTypeIn != 'o') return waveTypeOut;
-    return waveTypeIn;
+    return (waveTypeIn != 'o') ? waveTypeOut : waveTypeIn;
 }
 
 /*
@@ -361,8 +361,8 @@ Synth::~Synth()
     osc2.oscCanPlay = false;
     osc3.oscCanPlay = false;
 
-    filter1.SwitchOffFilter(true);
-    filter2.SwitchOffFilter(true);
+    filter1.switchOffFilter(true);
+    filter2.switchOffFilter(true);
 
     std::cout << "Synth is destroyed\n";
 }
@@ -384,8 +384,8 @@ Modulator::~Modulator()
     lfo1.isActive = false;
     lfo2.isActive = false;
 
-    ModFilter1.SwitchOffFilter(true);
-    ModFilter2.SwitchOffFilter(true);
+    ModFilter1.switchOffFilter(true);
+    ModFilter2.switchOffFilter(true);
 
     std::cout << "Modulator is destroyed\n";
 }
@@ -416,13 +416,17 @@ int main()
 
     if (synth1.isOn) std::cout << "Synth 1 is On" << std::endl;
     else std::cout << "Synth 1 is Off" << std::endl;
+
     if (synth2.isOn) std::cout << "Synth 2 is On" << std::endl;
     else std::cout << "Synth 2 is Off" << std::endl;
+
     if (mainMod.isOn) std::cout << "Main modulator is On" << std::endl;
     else std::cout << "Main modulator is Off" << std::endl;
+
     if (secMod.isOn) std::cout << "Secondary modulator is On" << std::endl;
     else std::cout << "Secondary modulator is Off" << std::endl;
-     std::cout << std::endl;
+
+    std::cout << std::endl;
 
     mainOsc.freq = 300.0f;
     secondaryOsc.freq = 2 * mainOsc.freq;
@@ -431,12 +435,12 @@ int main()
     std::cout << std::endl;
 
     std::cout << "Square ";
-    square.ChangeType(3, 5, 9);
+    square.changeType(3, 5, 9);
     std::cout << "Triangle oscillator ";
-    triangle.StartPlaying(false);
+    triangle.startPlaying(false);
     std::cout << "Triangle intensity value: " << triangle.intensity << std::endl;
     std::cout << "Square is making noise? ";
-    square.MakeNoise(20, 15);
+    square.makeNoise(20, 15);
     std::cout << std::endl;
 
     std::cout << "The low pass filter contains ";
@@ -450,9 +454,9 @@ int main()
     std::cout << std::endl;
 
     std::cout << "Sine Lfo state: ";
-    sine.StartPlaying(true);
+    sine.startPlaying(true);
     std::cout << "Is Duty Cycle Lfo making noise? " << std::endl;
-    dutyCycle.MakeNoise(10.0f, 20.5f);
+    dutyCycle.makeNoise(10.0f, 20.5f);
     std::cout << std::endl;
 
     std::cout << "good to go!" << std::endl;
