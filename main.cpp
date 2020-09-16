@@ -139,7 +139,10 @@ void Oscillator::OscWave::makeNoise (float strength, float weightT)
         std::cout << "OscWeight: " << weight << " > " << "strength: " << strength << std::endl;
         std::cout << "Make Noise!\n";
     }
-    else std::cout << "No Noise\n";
+    else 
+    {
+        std::cout << "No Noise\n";
+    }
 }
 
 void Oscillator::OscWave::startPlaying(bool isPlaying)
@@ -278,7 +281,6 @@ Lfo::Lfo()
 {
     modFreq = 440.f;
     dcOffset = 0.5f;
-
 }
 
 Lfo::~Lfo()
@@ -306,7 +308,10 @@ void Lfo::LfoType::makeNoise (float strength, float weight)
         std::cout << "LfoWeight is " << weight << " and strength is " << strength << std::endl;
         std::cout << "so WARNING Lfo is making noise!\n";
     }
-    else std::cout << "No Noise\n";
+    else 
+    {
+        std::cout << "No Noise\n";
+    }
 }
 
 void Lfo::LfoType::startPlaying(bool isPlaying)
