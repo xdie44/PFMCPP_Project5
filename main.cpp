@@ -201,10 +201,10 @@ void Filter::switchOffFilter (bool isFilterActive, int filterT)
 {
     int i = 1;
     while (i <= filterT)
-        {
-            std::cout << "Filter n " << i << " is switched off!\n";
-            i++;
-        }
+    {
+        std::cout << "Filter n " << i << " is switched off!\n";
+        i++;
+    }
     isFilterActive = false;
     filterType = 'o';
 
