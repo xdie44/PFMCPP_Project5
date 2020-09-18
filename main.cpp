@@ -98,6 +98,7 @@ struct Oscillator
     float calcHarmonics(float freqIn = 440.0f, int nHarm = 4);
     float freqHalfTone (float freq);
     char changeTimbre (char oscType1 = 'a', char oscType2 = 'b', bool isTheSame = false);
+    void oscillatorThisFunction();
     
 };
 
@@ -183,6 +184,15 @@ void Oscillator::OscWave::startPlaying(bool isPlaying)
     }
 }
 
+void Oscillator::oscillatorThisFunction()
+{
+    std::cout << "Oscillator frequency (from This Function): " << this->freq << std::endl;
+    std::cout << "Oscillator semitoneFreq (from 'This' function): " << this->freqHalfTone(this->freq) << std::endl;
+    std::cout << "Oscillator (from 'This' function) ";
+    this->OscType.startPlaying(true);
+    std::cout << std::endl;
+}
+
 /*
  UDT 2:
  */
@@ -201,6 +211,7 @@ struct Filter
     void filterFreq (float freq, int nHarm);
     void switchOffFilter (bool isFilterActive, int filterT = 3);
     int  nHarm (float freq, float freqMax = 20000.0f);
+    void filterThisFunction();
 };
 
 Filter::Filter () : 
@@ -255,6 +266,16 @@ int Filter::nHarm (float freq, float freqMax)
     return i;
 }
 
+void Filter::filterThisFunction()
+{
+    std::cout << "The filter contains (from 'This' function) ";
+    int nHarmTemp = this->nHarm(400);
+    std::cout << " among " << nHarmTemp << " harmonics" << std::endl;
+    std::cout << "The filters slope is (from 'This' function): " << this->slope << std::endl;
+    std::cout << std::endl;
+
+}
+
 /*
  UDT 3:
  */
@@ -290,6 +311,7 @@ struct Lfo
     bool canSwitchOnLfo (bool isLfoActive = true);
     float changeIntensity (int lfoT, float intensityLfoIn, float intensityLfoOut);
     char changeLfoWave (char waveTypeIn = 'a', char waveTypeOut = 'b');
+    void lfoThisFunction();
 };
 
 Lfo::LfoType::LfoType() : lfoWeight(1.2f), type("Sine")
@@ -372,6 +394,14 @@ char Lfo::changeLfoWave (char waveTypeIn, char waveTypeOut)
     return (waveTypeIn != 'o') ? waveTypeOut : waveTypeIn;
 }
 
+void Lfo::lfoThisFunction()
+{
+    std::cout << "Lfo intensity (from 'This' function) is: " << this->intensity << std::endl;
+    std::cout << "Lfo DC Offset (from 'This' function) is: " << this->dcOffset << std::endl;
+    std::cout << std::endl;
+
+}
+
 /*
  new UDT 4:
  */
@@ -436,6 +466,7 @@ Modulator::~Modulator()
 #include <iostream>
 int main()
 {
+    std::cout << std::endl;
     Synth synth1, synth2;
     Modulator mainMod, secMod;
     Oscillator mainOsc, secondaryOsc;
@@ -461,7 +492,9 @@ int main()
     mainOsc.freq = 300.0f;
     secondaryOsc.freq = 2 * mainOsc.freq;
     std::cout << "Main Oscillator frequency: " << mainOsc.freq << std::endl;
+    mainOsc.oscillatorThisFunction();
     std::cout << "Secondary Oscillator frequency: " << secondaryOsc.freq << std::endl;
+    secondaryOsc.oscillatorThisFunction();
     std::cout << std::endl;
 
     std::cout << "Square ";
@@ -476,11 +509,15 @@ int main()
     std::cout << "The low pass filter contains ";
     int nHarmTemp = lowPass.nHarm(400);
     std::cout << " among " << nHarmTemp << " harmonics" << std::endl;
+    lowPass.filterThisFunction();
     std::cout << "The high pass slope is: " << highPass.slope << std::endl;
+    highPass.filterThisFunction();
     std::cout << std::endl;
 
     std::cout << "Vibrato intensity is: " << vibrato.intensity << std::endl;
-    std::cout << "Tremolo DC Offset is: " << vibrato.dcOffset << std::endl;
+    vibrato.lfoThisFunction();
+    std::cout << "Tremolo DC Offset is: " << tremolo.dcOffset << std::endl;
+    tremolo.lfoThisFunction();
     std::cout << std::endl;
 
     std::cout << "Sine Lfo state: ";
