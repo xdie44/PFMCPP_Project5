@@ -536,63 +536,64 @@ struct ModulatorWrapper
 int main()
 {
     std::cout << std::endl;
-    Synth synth1, synth2;
-    Modulator mainMod, secMod;
-    Oscillator mainOsc, secondaryOsc;
-    Oscillator::OscWave square, triangle;
-    Filter lowPass, highPass;
-    Lfo vibrato, tremolo;
-    Lfo::LfoType sine, dutyCycle;
 
-    if (synth1.isOn) std::cout << "Synth 1 is On" << std::endl;
+    SynthWrapper synth1 ( new Synth ), synth2 (new Synth );
+    ModulatorWrapper mainMod ( new Modulator ), secMod ( new Modulator );
+    OscillatorWrapper mainOsc ( new Oscillator ), secondaryOsc ( new Oscillator );
+    OscWaveWrapper square ( new Oscillator::OscWave ) , triangle ( new Oscillator::OscWave );
+    FilterWrapper lowPass ( new Filter ), highPass ( new Filter );
+    LfoWrapper vibrato ( new Lfo ), tremolo ( new Lfo );
+    LfoTypeWrapper sine ( new Lfo::LfoType ), dutyCycle ( new Lfo::LfoType );
+
+    if (synth1.pointerToSynth->isOn) std::cout << "Synth 1 is On" << std::endl;
     else std::cout << "Synth 1 is Off" << std::endl;
 
-    if (synth2.isOn) std::cout << "Synth 2 is On" << std::endl;
+    if (synth2.pointerToSynth->isOn) std::cout << "Synth 2 is On" << std::endl;
     else std::cout << "Synth 2 is Off" << std::endl;
 
-    if (mainMod.isOn) std::cout << "Main modulator is On" << std::endl;
+    if (mainMod.pointerToModulator->isOn) std::cout << "Main modulator is On" << std::endl;
     else std::cout << "Main modulator is Off" << std::endl;
 
-    if (secMod.isOn) std::cout << "Secondary modulator is On" << std::endl;
+    if (secMod.pointerToModulator->isOn) std::cout << "Secondary modulator is On" << std::endl;
     else std::cout << "Secondary modulator is Off" << std::endl;
 
     std::cout << std::endl;
 
-    mainOsc.freq = 300.0f;
-    secondaryOsc.freq = 2 * mainOsc.freq;
-    std::cout << "Main Oscillator frequency: " << mainOsc.freq << std::endl;
-    mainOsc.oscillatorThisFunction();
-    std::cout << "Secondary Oscillator frequency: " << secondaryOsc.freq << std::endl;
-    secondaryOsc.oscillatorThisFunction();
+    mainOsc.pointerToOscillator->freq = 300.0f;
+    secondaryOsc.pointerToOscillator->freq = 2 * mainOsc.pointerToOscillator->freq;
+    std::cout << "Main Oscillator frequency: " << mainOsc.pointerToOscillator->freq << std::endl;
+    mainOsc.pointerToOscillator->oscillatorThisFunction();
+    std::cout << "Secondary Oscillator frequency: " << secondaryOsc.pointerToOscillator->freq << std::endl;
+    secondaryOsc.pointerToOscillator->oscillatorThisFunction();
     std::cout << std::endl;
 
     std::cout << "Square ";
-    square.changeType(3, 5, 9);
+    square.pointerToOscWave->changeType(3, 5, 9);
     std::cout << "Triangle oscillator ";
-    triangle.startPlaying(false);
-    std::cout << "Triangle intensity value: " << triangle.intensity << std::endl;
+    triangle.pointerToOscWave->startPlaying(false);
+    std::cout << "Triangle intensity value: " << triangle.pointerToOscWave->intensity << std::endl;
     std::cout << "Square is making noise? ";
-    square.makeNoise(20, 15);
+    square.pointerToOscWave->makeNoise(20, 15);
     std::cout << std::endl;
 
     std::cout << "The low pass filter contains ";
-    int nHarmTemp = lowPass.nHarm(400);
+    int nHarmTemp = lowPass.pointerToFilter->nHarm(400);
     std::cout << " among " << nHarmTemp << " harmonics" << std::endl;
-    lowPass.filterThisFunction();
-    std::cout << "The high pass slope is: " << highPass.slope << std::endl;
-    highPass.filterThisFunction();
+    lowPass.pointerToFilter->filterThisFunction();
+    std::cout << "The high pass slope is: " << highPass.pointerToFilter->slope << std::endl;
+    highPass.pointerToFilter->filterThisFunction();
     std::cout << std::endl;
 
-    std::cout << "Vibrato intensity is: " << vibrato.intensity << std::endl;
-    vibrato.lfoThisFunction();
-    std::cout << "Tremolo DC Offset is: " << tremolo.dcOffset << std::endl;
-    tremolo.lfoThisFunction();
+    std::cout << "Vibrato intensity is: " << vibrato.pointerToLfo->intensity << std::endl;
+    vibrato.pointerToLfo->lfoThisFunction();
+    std::cout << "Tremolo DC Offset is: " << tremolo.pointerToLfo->dcOffset << std::endl;
+    tremolo.pointerToLfo->lfoThisFunction();
     std::cout << std::endl;
 
     std::cout << "Sine Lfo state: ";
-    sine.startPlaying(true);
+    sine.pointerToLfoType->startPlaying(true);
     std::cout << "Is Duty Cycle Lfo making noise? " << std::endl;
-    dutyCycle.makeNoise(10.0f, 20.5f);
+    dutyCycle.pointerToLfoType->makeNoise(10.0f, 20.5f);
     std::cout << std::endl;
 
     std::cout << "good to go!" << std::endl;
