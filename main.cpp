@@ -49,6 +49,7 @@ You don't have to do this, you can keep your current object name and just change
 
 
 #include <iostream>
+#include "LeakedObjectDetector.h"
 
 /*
  UDT 1:
@@ -74,6 +75,8 @@ struct Oscillator
         void startPlaying(bool isPlaying);
         void makeNoise(float Strength, float weight);
         int changeType(int whichOsc, int newType, int numOsc);
+
+        JUCE_LEAK_DETECTOR(OscWave)
         
     };
     OscWave OscType;
@@ -85,7 +88,8 @@ struct Oscillator
     float freqHalfTone (float freq);
     char changeTimbre (char oscType1 = 'a', char oscType2 = 'b', bool isTheSame = false);
     void oscillatorThisFunction();
-    
+
+    JUCE_LEAK_DETECTOR(Oscillator)
 };
 
 Oscillator::Oscillator() : 
@@ -179,6 +183,26 @@ void Oscillator::oscillatorThisFunction()
     std::cout << std::endl;
 }
 
+struct OscillatorWrapper
+{
+    OscillatorWrapper(Oscillator* ptr) : pointerToOscillator( ptr ){}
+    ~OscillatorWrapper()
+    {
+        delete pointerToOscillator;
+    }
+    Oscillator* pointerToOscillator = nullptr;
+};
+
+struct OscWaveWrapper
+{
+    OscWaveWrapper(Oscillator::OscWave* ptr) : pointerToOscWave( ptr ){}
+    ~OscWaveWrapper()
+    {
+        delete pointerToOscWave;
+    }
+    Oscillator::OscWave* pointerToOscWave = nullptr;
+};
+
 /*
  UDT 2:
  */
@@ -198,6 +222,8 @@ struct Filter
     void switchOffFilter (bool isFilterActive, int filterT = 3);
     int  nHarm (float freq, float freqMax = 20000.0f);
     void filterThisFunction();
+
+    JUCE_LEAK_DETECTOR(Filter)
 };
 
 Filter::Filter () : 
@@ -262,6 +288,16 @@ void Filter::filterThisFunction()
 
 }
 
+struct FilterWrapper
+{
+    FilterWrapper(Filter* ptr) : pointerToFilter( ptr ){}
+    ~FilterWrapper()
+    {
+        delete pointerToFilter;
+    }
+    Filter* pointerToFilter = nullptr;
+};
+
 /*
  UDT 3:
  */
@@ -286,7 +322,8 @@ struct Lfo
         void startPlaying(bool isPlaying);
         void makeNoise(float strength, float weight);
         int changeType(int whichLfo, int newType, int numLfo);
-        
+
+        JUCE_LEAK_DETECTOR(LfoType)
     };
 
     LfoType LfoT;
@@ -298,6 +335,8 @@ struct Lfo
     float changeIntensity (int lfoT, float intensityLfoIn, float intensityLfoOut);
     char changeLfoWave (char waveTypeIn = 'a', char waveTypeOut = 'b');
     void lfoThisFunction();
+
+    JUCE_LEAK_DETECTOR(Lfo)
 };
 
 Lfo::LfoType::LfoType() : lfoWeight(1.2f), type("Sine")
@@ -388,6 +427,26 @@ void Lfo::lfoThisFunction()
 
 }
 
+struct LfoWrapper
+{
+    LfoWrapper(Lfo* ptr) : pointerToLfo( ptr ){}
+    ~LfoWrapper()
+    {
+        delete pointerToLfo; 
+    }
+    Lfo* pointerToLfo = nullptr;
+};
+
+struct LfoTypeWrapper
+{
+    LfoTypeWrapper(Lfo::LfoType* ptr) : pointerToLfoType( ptr ){}
+    ~LfoTypeWrapper()
+    {
+        delete pointerToLfoType; 
+    }
+    Lfo::LfoType* pointerToLfoType = nullptr;
+};
+
 /*
  new UDT 4:
  */
@@ -399,6 +458,8 @@ struct Synth
     bool isOn = true;
 
     ~Synth();
+
+    JUCE_LEAK_DETECTOR(Synth)
 };
 
 Synth::~Synth()
@@ -412,9 +473,21 @@ Synth::~Synth()
 
     std::cout << "Synth is destroyed\n";
 }
+
+struct SynthWrapper
+{
+    SynthWrapper(Synth* ptr) : pointerToSynth( ptr ){}
+    ~SynthWrapper()
+    {
+        delete pointerToSynth; 
+    }
+    Synth* pointerToSynth = nullptr;
+};
+
 /*
  new UDT 5:
  */
+
  struct Modulator
 {
     Lfo lfo1, lfo2;
@@ -423,6 +496,8 @@ Synth::~Synth()
     bool isOn = false;
 
     ~Modulator();
+
+    JUCE_LEAK_DETECTOR(Modulator)
 };
 
 Modulator::~Modulator()
@@ -436,7 +511,15 @@ Modulator::~Modulator()
     std::cout << "Modulator is destroyed\n";
 }
 
-
+struct ModulatorWrapper
+{
+    ModulatorWrapper(Modulator* ptr) : pointerToModulator( ptr ){}
+    ~ModulatorWrapper()
+    {
+        delete pointerToModulator; 
+    }
+    Modulator* pointerToModulator = nullptr;
+};
 
 /*
  MAKE SURE YOU ARE NOT ON THE MASTER BRANCH
@@ -453,63 +536,64 @@ Modulator::~Modulator()
 int main()
 {
     std::cout << std::endl;
-    Synth synth1, synth2;
-    Modulator mainMod, secMod;
-    Oscillator mainOsc, secondaryOsc;
-    Oscillator::OscWave square, triangle;
-    Filter lowPass, highPass;
-    Lfo vibrato, tremolo;
-    Lfo::LfoType sine, dutyCycle;
 
-    if (synth1.isOn) std::cout << "Synth 1 is On" << std::endl;
+    SynthWrapper synth1 ( new Synth ), synth2 (new Synth );
+    ModulatorWrapper mainMod ( new Modulator ), secMod ( new Modulator );
+    OscillatorWrapper mainOsc ( new Oscillator ), secondaryOsc ( new Oscillator );
+    OscWaveWrapper square ( new Oscillator::OscWave ) , triangle ( new Oscillator::OscWave );
+    FilterWrapper lowPass ( new Filter ), highPass ( new Filter );
+    LfoWrapper vibrato ( new Lfo ), tremolo ( new Lfo );
+    LfoTypeWrapper sine ( new Lfo::LfoType ), dutyCycle ( new Lfo::LfoType );
+
+    if (synth1.pointerToSynth->isOn) std::cout << "Synth 1 is On" << std::endl;
     else std::cout << "Synth 1 is Off" << std::endl;
 
-    if (synth2.isOn) std::cout << "Synth 2 is On" << std::endl;
+    if (synth2.pointerToSynth->isOn) std::cout << "Synth 2 is On" << std::endl;
     else std::cout << "Synth 2 is Off" << std::endl;
 
-    if (mainMod.isOn) std::cout << "Main modulator is On" << std::endl;
+    if (mainMod.pointerToModulator->isOn) std::cout << "Main modulator is On" << std::endl;
     else std::cout << "Main modulator is Off" << std::endl;
 
-    if (secMod.isOn) std::cout << "Secondary modulator is On" << std::endl;
+    if (secMod.pointerToModulator->isOn) std::cout << "Secondary modulator is On" << std::endl;
     else std::cout << "Secondary modulator is Off" << std::endl;
 
     std::cout << std::endl;
 
-    mainOsc.freq = 300.0f;
-    secondaryOsc.freq = 2 * mainOsc.freq;
-    std::cout << "Main Oscillator frequency: " << mainOsc.freq << std::endl;
-    mainOsc.oscillatorThisFunction();
-    std::cout << "Secondary Oscillator frequency: " << secondaryOsc.freq << std::endl;
-    secondaryOsc.oscillatorThisFunction();
+    mainOsc.pointerToOscillator->freq = 300.0f;
+    secondaryOsc.pointerToOscillator->freq = 2 * mainOsc.pointerToOscillator->freq;
+    std::cout << "Main Oscillator frequency: " << mainOsc.pointerToOscillator->freq << std::endl;
+    mainOsc.pointerToOscillator->oscillatorThisFunction();
+    std::cout << "Secondary Oscillator frequency: " << secondaryOsc.pointerToOscillator->freq << std::endl;
+    secondaryOsc.pointerToOscillator->oscillatorThisFunction();
     std::cout << std::endl;
 
     std::cout << "Square ";
-    square.changeType(3, 5, 9);
+    square.pointerToOscWave->changeType(3, 5, 9);
     std::cout << "Triangle oscillator ";
-    triangle.startPlaying(false);
-    std::cout << "Triangle intensity value: " << triangle.intensity << std::endl;
+    triangle.pointerToOscWave->startPlaying(false);
+    std::cout << "Triangle intensity value: " << triangle.pointerToOscWave->intensity << std::endl;
     std::cout << "Square is making noise? ";
-    square.makeNoise(20, 15);
+    square.pointerToOscWave->makeNoise(20, 15);
     std::cout << std::endl;
 
     std::cout << "The low pass filter contains ";
-    int nHarmTemp = lowPass.nHarm(400);
+    int nHarmTemp = lowPass.pointerToFilter->nHarm(400);
     std::cout << " among " << nHarmTemp << " harmonics" << std::endl;
-    lowPass.filterThisFunction();
-    std::cout << "The high pass slope is: " << highPass.slope << std::endl;
-    highPass.filterThisFunction();
+    lowPass.pointerToFilter->filterThisFunction();
+    std::cout << "The high pass slope is: " << highPass.pointerToFilter->slope << std::endl;
+    highPass.pointerToFilter->filterThisFunction();
     std::cout << std::endl;
 
-    std::cout << "Vibrato intensity is: " << vibrato.intensity << std::endl;
-    vibrato.lfoThisFunction();
-    std::cout << "Tremolo DC Offset is: " << tremolo.dcOffset << std::endl;
-    tremolo.lfoThisFunction();
+    std::cout << "Vibrato intensity is: " << vibrato.pointerToLfo->intensity << std::endl;
+    vibrato.pointerToLfo->lfoThisFunction();
+    std::cout << "Tremolo DC Offset is: " << tremolo.pointerToLfo->dcOffset << std::endl;
+    tremolo.pointerToLfo->lfoThisFunction();
     std::cout << std::endl;
 
     std::cout << "Sine Lfo state: ";
-    sine.startPlaying(true);
+    sine.pointerToLfoType->startPlaying(true);
     std::cout << "Is Duty Cycle Lfo making noise? " << std::endl;
-    dutyCycle.makeNoise(10.0f, 20.5f);
+    dutyCycle.pointerToLfoType->makeNoise(10.0f, 20.5f);
     std::cout << std::endl;
 
     std::cout << "good to go!" << std::endl;
