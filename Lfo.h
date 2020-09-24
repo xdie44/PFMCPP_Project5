@@ -1,3 +1,9 @@
+#pragma once
+
+#include "LeakedObjectDetector.h"
+
+#include "LfoType.h"
+
 struct Lfo
 {
     float modFreq;

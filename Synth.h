@@ -1,3 +1,8 @@
+#pragma once
+
+#include "Oscillator.h"
+#include "Filter.h"
+
 struct Synth
 {
     Oscillator osc1, osc2, osc3;

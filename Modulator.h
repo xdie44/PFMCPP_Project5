@@ -1,3 +1,8 @@
+#pragma once
+
+#include "Lfo.h"
+#include "Filter.h"
+
 struct Modulator
 {
     Lfo lfo1, lfo2;

@@ -1,7 +1,5 @@
-#include "Oscillator.h"
-#include "OscWave.h"
-#include "Filter.h"
 #include "Wrappers.h"
+
 #include "Synth.h"
 #include "Modulator.h"
 
@@ -12,7 +10,6 @@ OscillatorWrapper::~OscillatorWrapper()
     delete pointerToOscillator;
 }
 
-Oscillator* pointerToOscillator = nullptr;
 
 //============================================
 
@@ -23,8 +20,6 @@ OscWaveWrapper::~OscWaveWrapper()
     delete pointerToOscWave;
 }
 
-OscWave* pointerToOscWave = nullptr;
-
 //============================================
 
 FilterWrapper::FilterWrapper(Filter* ptr) : pointerToFilter( ptr ){}
@@ -34,7 +29,23 @@ FilterWrapper::~FilterWrapper()
     delete pointerToFilter;
 }
 
-Filter* pointerToFilter = nullptr;
+//============================================
+
+LfoWrapper::LfoWrapper(Lfo* ptr) : pointerToLfo( ptr ){}
+
+LfoWrapper::~LfoWrapper()
+{
+    delete pointerToLfo; 
+}
+
+//============================================
+
+LfoTypeWrapper::LfoTypeWrapper(LfoType* ptr) : pointerToLfoType( ptr ){}
+
+LfoTypeWrapper::~LfoTypeWrapper()
+{
+    delete pointerToLfoType; 
+}
 
 //============================================
 
@@ -45,8 +56,6 @@ SynthWrapper::~SynthWrapper()
     delete pointerToSynth; 
 }
 
-Synth* pointerToSynth = nullptr;
-
 //============================================
 
 ModulatorWrapper::ModulatorWrapper(Modulator* ptr) : pointerToModulator( ptr ){}
@@ -55,5 +64,3 @@ ModulatorWrapper::~ModulatorWrapper()
 {
     delete pointerToModulator; 
 }
-
-Modulator* pointerToModulator = nullptr;

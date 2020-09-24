@@ -1,8 +1,11 @@
 struct Oscillator;
 struct OscWave;
 struct Filter;
+struct Lfo;
+struct LfoType;
 struct Synth;
 struct Modulator;
+
 
 struct OscillatorWrapper
 {
@@ -17,7 +20,7 @@ struct OscWaveWrapper
     OscWaveWrapper(OscWave* ptr);
     ~OscWaveWrapper();
 
-    Oscillator::OscWave* pointerToOscWave = nullptr;
+    OscWave* pointerToOscWave = nullptr;
 };
 
 struct FilterWrapper
@@ -26,6 +29,22 @@ struct FilterWrapper
     ~FilterWrapper();
     
     Filter* pointerToFilter = nullptr;
+};
+
+struct LfoWrapper
+{
+    LfoWrapper(Lfo* ptr);
+    ~LfoWrapper();
+    
+    Lfo* pointerToLfo = nullptr;
+};
+
+struct LfoTypeWrapper
+{
+    LfoTypeWrapper(LfoType* ptr);
+    ~LfoTypeWrapper();
+    
+    LfoType* pointerToLfoType = nullptr;
 };
 
 struct SynthWrapper

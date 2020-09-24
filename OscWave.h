@@ -1,3 +1,7 @@
+#pragma once
+
+#include "LeakedObjectDetector.h"
+
 struct OscWave 
 {
     OscWave();
@@ -14,5 +18,4 @@ struct OscWave
     int changeType(int whichOsc, int newType, int numOsc);
 
     JUCE_LEAK_DETECTOR(OscWave)
-        
 };

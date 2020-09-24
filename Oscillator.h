@@ -1,4 +1,8 @@
+#pragma once
+
 #include "OscWave.h"
+
+#include "LeakedObjectDetector.h"
 
 struct Oscillator
 {
