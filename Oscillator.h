@@ -11,7 +11,7 @@ struct Oscillator
     bool oscCanPlay{true};
     int numHarmonics;
     
-    OscWave OscType;
+    OscWave oscType;
 
     Oscillator ();
     ~Oscillator();

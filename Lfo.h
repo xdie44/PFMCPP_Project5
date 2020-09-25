@@ -11,13 +11,13 @@ struct Lfo
     float intensity{0.8f};
     bool isActive {true};
 
-    LfoType LfoT;
+    LfoType lfoT;
 
     Lfo();
     ~Lfo();
 
     bool canSwitchOnLfo (bool isLfoActive = true);
-    float changeIntensity (int lfoT, float intensityLfoIn, float intensityLfoOut);
+    float changeIntensity (int lfoTp, float intensityLfoIn, float intensityLfoOut);
     char changeLfoWave (char waveTypeIn = 'a', char waveTypeOut = 'b');
     void lfoThisFunction();
 

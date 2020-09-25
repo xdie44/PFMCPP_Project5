@@ -1,3 +1,5 @@
+#pragma once
+
 struct Oscillator;
 struct OscWave;
 struct Filter;

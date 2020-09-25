@@ -36,6 +36,6 @@ void Oscillator::oscillatorThisFunction()
     std::cout << "Oscillator frequency (from This Function): " << this->freq << std::endl;
     std::cout << "Oscillator semitoneFreq (from 'This' function): " << this->freqHalfTone(this->freq) << std::endl;
     std::cout << "Oscillator (from 'This' function) ";
-    this->OscType.startPlaying(true);
+    this->oscType.startPlaying(true);
     std::cout << std::endl;
 }

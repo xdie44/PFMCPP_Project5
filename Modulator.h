@@ -6,7 +6,7 @@
 struct Modulator
 {
     Lfo lfo1, lfo2;
-    Filter ModFilter1, ModFilter2;
+    Filter modFilter1, modFilter2;
 
     bool isOn = false;
 

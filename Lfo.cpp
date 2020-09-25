@@ -17,9 +17,9 @@ bool Lfo::canSwitchOnLfo (bool isLfoActive)
     return isLfoActive ? false : true;
 }
 
-float Lfo::changeIntensity (int lfoT, float intensityLfoIn, float intensityLfoOut)
+float Lfo::changeIntensity (int lfoTp, float intensityLfoIn, float intensityLfoOut)
 {
-    for (int i = 0; i < lfoT; i++)
+    for (int i = 0; i < lfoTp; i++)
     {
         std::cout << "LFO n " << i << " " << intensityLfoOut << "\n";
         intensityLfoOut += intensityLfoIn;
